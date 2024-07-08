@@ -1,5 +1,5 @@
 package com.example.demo.mapper1;
-
+/*
 import com.example.demo.controller.user.request.CreateUserRequest;
 import com.example.demo.controller.user.response.UserResponse;
 import com.example.demo.repository.user.User;
@@ -34,3 +34,4 @@ public class UserMapper {
     }
 
 }
+*/

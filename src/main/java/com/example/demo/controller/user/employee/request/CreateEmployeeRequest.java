@@ -15,6 +15,9 @@ public class CreateEmployeeRequest {
     private String name;
 
     @NotBlank
+    private String surname;
+
+    @NotBlank
     @Email
     private String email;
 

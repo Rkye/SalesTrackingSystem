@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Getter
 @Setter
@@ -33,11 +33,17 @@ public class Base {
     private LocalDateTime lastModified;
 
     @Column(name = "created_date")
-    private LocalDate createdDate;
+    private LocalDateTime createdDate;
 
     @PrePersist
-    protected void onCreate() {
-        createdDate = LocalDate.now();
+    protected void beforeCreate() {
+        createdDate = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        isDeleted = false;
+    }
+
+    @PreUpdate
+    protected void beforeUpdate() {
+        lastModified = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     }
 
 

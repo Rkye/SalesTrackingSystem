@@ -1,5 +1,5 @@
 package com.example.demo.mapper1;
-
+/*
 import com.example.demo.controller.product.response.ProductResponse;
 import com.example.demo.controller.sale.request.CreateSaleRequest;
 import com.example.demo.controller.sale.request.UpdateSaleRequest;
@@ -79,3 +79,4 @@ public class SaleMapper {
     }
 
 }
+*/

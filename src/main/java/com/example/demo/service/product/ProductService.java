@@ -18,4 +18,8 @@ public interface ProductService {
 
     void delete(int id);
 
+    boolean existsByName(String name);
+
+
+
 }

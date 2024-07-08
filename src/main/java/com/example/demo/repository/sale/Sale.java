@@ -5,9 +5,7 @@ import com.example.demo.repository.product.Product;
 import com.example.demo.repository.user.customer.Customer;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Table(name = "sales")
@@ -16,7 +14,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@SuperBuilder
 public class Sale extends Base {
 
     @ManyToOne
@@ -34,8 +31,6 @@ public class Sale extends Base {
     private double totalAmount;
 
     @Column(name = "sale_date")
-    private LocalDate saleDate;
-
-
+    private LocalDateTime saleDate;
 
 }

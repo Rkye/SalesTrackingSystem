@@ -1,9 +1,9 @@
 package com.example.demo.repository.user;
 
 import com.example.demo.core.Base;
+import com.example.demo.service.user.model.RoleType;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
@@ -11,13 +11,14 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @Table(name = "users")
 @Entity
-@SuperBuilder
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "user_type")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User extends Base {
 
     @Column(name = "name")
     private String name;
+
+    @Column(name = "surname")
+    private String surname;
 
     @Column(name = "email")
     private String email;
@@ -28,5 +29,8 @@ public class User extends Base {
     @Column(name = "phone")
     private String phone;
 
-    //TODO private String role;
+    @Column(name = "role_type")
+    @Enumerated(EnumType.STRING)
+    private RoleType roleType;
+
 }

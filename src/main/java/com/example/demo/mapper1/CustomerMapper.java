@@ -1,5 +1,5 @@
 package com.example.demo.mapper1;
-
+/*
 import com.example.demo.controller.user.customer.request.CreateCustomerRequest;
 import com.example.demo.controller.user.customer.response.CustomerResponse;
 import com.example.demo.repository.user.customer.Customer;
@@ -43,3 +43,4 @@ public class CustomerMapper {
                 .build();
     }
 }
+*/

@@ -18,6 +18,9 @@ public class UpdateEmployeeRequest {
     private String name;
 
     @NotBlank
+    private String surname;
+
+    @NotBlank
     @NotBlank
     private String email;
 

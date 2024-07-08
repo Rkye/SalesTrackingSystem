@@ -3,12 +3,12 @@ package com.example.demo.service.sale;
 import com.example.demo.controller.sale.request.CreateSaleRequest;
 import com.example.demo.controller.sale.request.UpdateSaleRequest;
 import com.example.demo.controller.sale.response.SaleResponse;
+import com.example.demo.core.exception.NotFoundException;
 import com.example.demo.core.mapper.ModelMapperService;
 import com.example.demo.repository.product.Product;
 import com.example.demo.repository.product.ProductRepository;
 import com.example.demo.repository.sale.Sale;
 import com.example.demo.repository.sale.SaleRepository;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.example.demo.core.exception.type.NotFoundExceptionType.*;
 
 @RequiredArgsConstructor
 @Service
@@ -29,14 +31,19 @@ public class SaleManager implements SaleService{
     @Transactional
     public void create(CreateSaleRequest saleRequest) {
 
+        Product product = productRepository.findById(saleRequest.getProductId())
+                .orElseThrow(() -> new NotFoundException(PRODUCT_DATA_NOT_FOUND));
+
+
+        if (product.getStockQuantity() < saleRequest.getQuantity()) {
+            throw new NotFoundException(STOCK_DATA_NOT_FOUND);
+        }
+
         Sale sale = mapperService.forRequest().map(saleRequest, Sale.class);
 
-        Product product = productRepository.findById(sale.getProduct().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Ürün bulunamadı: " + sale.getProduct().getId()));
-
-        if (product.getStockQuantity() < sale.getQuantity()) {
-            throw new RuntimeException("Yetersiz stok: " + product.getName());
-        }
+        //manuel olarak productı saleda setlemek zorundayız, aksi takdirde
+        //saledan product alanlarına erişemiyoruz.
+        sale.setProduct(product);
 
         double totalAmount = calculateTotalAmount(sale);
         sale.setTotalAmount(totalAmount);
@@ -55,10 +62,10 @@ public class SaleManager implements SaleService{
     public void update(UpdateSaleRequest saleRequest) {
 
         Sale existingSale = repository.findById(saleRequest.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Satış bulunamadı: " + saleRequest.getId()));
+                .orElseThrow(() -> new NotFoundException(SALE_DATA_NOT_FOUND));
 
         Product product = productRepository.findById(existingSale.getProduct().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Ürün bulunamadı: " + existingSale.getProduct().getId()));
+                .orElseThrow(() -> new NotFoundException(PRODUCT_DATA_NOT_FOUND));
 
 
         // Eski quantity değerini al
@@ -73,7 +80,7 @@ public class SaleManager implements SaleService{
         int quantityDifference = newQuantity - oldQuantity;
 
         if (product.getStockQuantity() < quantityDifference) {
-            throw new RuntimeException("Yetersiz stok: " + product.getName());
+            throw new NotFoundException(STOCK_DATA_NOT_FOUND);
         }
 
         product.setStockQuantity(product.getStockQuantity() - quantityDifference);
@@ -90,7 +97,7 @@ public class SaleManager implements SaleService{
     @Override
     public SaleResponse getById(int id) {
 
-        Sale sale = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Satış bulunamadı: " + id));
+        Sale sale = repository.findById(id).orElseThrow(() -> new NotFoundException(SALE_DATA_NOT_FOUND));
         SaleResponse saleResponse = mapperService.forResponse().map(sale, SaleResponse.class);
         return saleResponse;
 
@@ -110,7 +117,7 @@ public class SaleManager implements SaleService{
     @Override
     public void delete(int id) {
 
-        repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Satış bulunamadı: " + id));
+        repository.findById(id).orElseThrow(() -> new NotFoundException(SALE_DATA_NOT_FOUND));
         repository.deleteById(id);
 
     }
@@ -118,7 +125,9 @@ public class SaleManager implements SaleService{
     public double calculateTotalAmount(Sale sale){
 
         double price = sale.getProduct().getUnitPrice();
-        return price * sale.getQuantity();
+
+        double totalAmount = price * sale.getQuantity();
+        return totalAmount;
 
     }
 
@@ -130,7 +139,6 @@ public class SaleManager implements SaleService{
                         .map(sale -> mapperService.forResponse()
                         .map(sale, SaleResponse.class))
                         .collect(Collectors.toList());
-
     }
 
 }

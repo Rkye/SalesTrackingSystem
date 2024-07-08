@@ -1,5 +1,5 @@
 package com.example.demo.mapper1;
-
+/*
 import com.example.demo.controller.user.employee.request.CreateEmployeeRequest;
 import com.example.demo.controller.user.employee.response.EmployeeResponse;
 import com.example.demo.repository.user.employee.Employee;
@@ -33,3 +33,4 @@ public class EmployeeMapper {
                 .build();
     }
 }
+*/

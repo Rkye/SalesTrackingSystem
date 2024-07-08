@@ -1,5 +1,5 @@
 package com.example.demo.mapper1;
-
+/*
 import com.example.demo.controller.product.request.CreateProductRequest;
 import com.example.demo.controller.product.request.UpdateProductRequest;
 import com.example.demo.controller.product.response.ProductResponse;
@@ -64,3 +64,4 @@ public class ProductMapper {
 
 
 }
+*/
