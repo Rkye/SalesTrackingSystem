@@ -1,9 +1,10 @@
 package com.example.demo.service.user.model;
 
 import lombok.Getter;
+import org.springframework.security.core.GrantedAuthority;
 
 @Getter
-public enum RoleType {
+public enum RoleType implements GrantedAuthority {
 
     USER("Kullanıcı"),
 
@@ -20,4 +21,8 @@ public enum RoleType {
     }
 
 
+    @Override
+    public String getAuthority() {
+        return name();
+    }
 }

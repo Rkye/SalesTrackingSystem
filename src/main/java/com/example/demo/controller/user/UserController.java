@@ -20,7 +20,6 @@ public class UserController extends BaseController {
 
     private final UserService userService;
 
-
     @GetMapping("/{id}")
     public ResponseEntity<TResponse<UserResponse>> getById(@RequestParam int id){
 

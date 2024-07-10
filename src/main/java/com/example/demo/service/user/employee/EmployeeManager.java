@@ -8,6 +8,7 @@ import com.example.demo.core.mapper.ModelMapperService;
 import com.example.demo.repository.user.employee.Employee;
 import com.example.demo.repository.user.employee.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,10 +22,12 @@ public class EmployeeManager implements EmployeeService{
 
     private final EmployeeRepository employeeRepository;
     private final ModelMapperService mapperService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void create(CreateEmployeeRequest employeeRequest) {
 
+        employeeRequest.setPassword(passwordEncoder.encode(employeeRequest.getPassword()));
         Employee employee = mapperService.forRequest().map(employeeRequest, Employee.class);
         employeeRepository.save(employee);
 

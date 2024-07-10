@@ -6,6 +6,8 @@ import com.example.demo.core.mapper.ModelMapperService;
 import com.example.demo.repository.user.User;
 import com.example.demo.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +21,22 @@ public class UserManager implements UserService {
 
     private final UserRepository userRepository;
     private final ModelMapperService mapperService;
+
+
+    public UserDetails loadUserByUsername(String emailAddress) throws UsernameNotFoundException {
+        User user = getByEmail(emailAddress);
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(user.getEmail())
+                .password(user.getPassword())
+                .authorities(user.getRoleType().name())
+                .build();
+    }
+
+    @Override
+    public User getByEmail(String emailAddress) {
+        return this.userRepository.findByEmailIgnoreCase(emailAddress).orElseThrow(() -> new NotFoundException(
+                USER_DATA_NOT_FOUND));
+    }
 
     @Override
     public UserResponse getById(int id) {

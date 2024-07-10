@@ -8,6 +8,7 @@ import com.example.demo.core.mapper.ModelMapperService;
 import com.example.demo.repository.user.customer.Customer;
 import com.example.demo.repository.user.customer.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,10 +22,13 @@ public class CustomerManager implements CustomerService{
 
     private final CustomerRepository customerRepository;
     private final ModelMapperService mapperService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void create(CreateCustomerRequest customerRequest) {
 
+
+        customerRequest.setPassword(passwordEncoder.encode(customerRequest.getPassword()));
         Customer customer = mapperService.forRequest().map(customerRequest, Customer.class);
         customerRepository.save(customer);
 
@@ -36,6 +40,7 @@ public class CustomerManager implements CustomerService{
                 .orElseThrow(() -> new NotFoundException(CUSTOMER_DATA_NOT_FOUND));
 
         mapperService.forRequest().map(customerRequest, existingCustomer);
+        //updateCustomerRequest.setPassword(passwordEncoder.encode(updateCustomerRequest.getPassword()));
         customerRepository.save(existingCustomer);
 
     }
